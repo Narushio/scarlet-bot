@@ -7,14 +7,14 @@ import (
 	"log"
 	"time"
 
+	"github.com/Narushio/scarlet-bot/api"
 	"github.com/tencent-connect/botgo/dto"
 	"github.com/tencent-connect/botgo/dto/message"
-	"github.com/tencent-connect/botgo/openapi"
 )
 
 // Processor is a struct to process message
 type Processor struct {
-	api openapi.OpenAPI
+	tencentAPI api.TencentAPI
 }
 
 // ProcessMessage is a function to process message
@@ -37,6 +37,16 @@ func (p Processor) ProcessMessage(input string, data *dto.WSATMessageData) error
 	}
 
 	switch cmd.Cmd {
+	case "image":
+		msgData := map[string]string{
+			"content": "被动消息测试",
+			"msg_id":  data.ID,
+		}
+		a, err := p.tencentAPI.ExtendedAPI.SendPicToChannelMsg(ctx, data.ChannelID, "resources/图片1.jpg", msgData)
+		if err != nil {
+			log.Println(err)
+		}
+		log.Println(a)
 	case "hi":
 		p.sendReply(ctx, data.ChannelID, toCreate)
 	case "time":
@@ -92,15 +102,15 @@ func (p Processor) ProcessInlineSearch(interaction *dto.WSInteractionData) error
 		},
 	}
 	body, _ := json.Marshal(searchRsp)
-	if err := p.api.PutInteraction(context.Background(), interaction.ID, string(body)); err != nil {
-		log.Println("api call putInteractionInlineSearch  error: ", err)
+	if err := p.tencentAPI.OpenAPI.PutInteraction(context.Background(), interaction.ID, string(body)); err != nil {
+		log.Println("openAPI call putInteractionInlineSearch  error: ", err)
 		return err
 	}
 	return nil
 }
 
 func (p Processor) dmHandler(data *dto.WSATMessageData) {
-	dm, err := p.api.CreateDirectMessage(
+	dm, err := p.tencentAPI.OpenAPI.CreateDirectMessage(
 		context.Background(), &dto.DirectMessageToCreate{
 			SourceGuildID: data.GuildID,
 			RecipientID:   data.Author.ID,
@@ -114,7 +124,7 @@ func (p Processor) dmHandler(data *dto.WSATMessageData) {
 	toCreate := &dto.MessageToCreate{
 		Content: "默认私信回复",
 	}
-	_, err = p.api.PostDirectMessage(
+	_, err = p.tencentAPI.OpenAPI.PostDirectMessage(
 		context.Background(), dm, toCreate,
 	)
 	if err != nil {

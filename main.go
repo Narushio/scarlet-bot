@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/Narushio/scarlet-bot/api"
 	"github.com/tencent-connect/botgo"
 	"github.com/tencent-connect/botgo/dto"
 	"github.com/tencent-connect/botgo/dto/message"
@@ -29,17 +30,16 @@ func main() {
 	}
 
 	// 初始化 openapi，正式环境
-	api := botgo.NewOpenAPI(botToken).WithTimeout(3 * time.Second)
-	// 沙箱环境
-	// api := botgo.NewSandboxOpenAPI(botToken).WithTimeout(3 * time.Second)
+	//openAPI := botgo.NewOpenAPI(botToken).WithTimeout(3 * time.Second)
+	tAPI := api.NewTencentAPI(botToken, 3*time.Second)
 
 	// 获取 websocket 信息
-	wsInfo, err := api.WS(ctx, nil, "")
+	wsInfo, err := tAPI.OpenAPI.WS(ctx, nil, "")
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	processor = Processor{api: api}
+	processor = Processor{tencentAPI: *tAPI}
 
 	// websocket.RegisterResumeSignal(syscall.SIGUSR1)
 	// 根据不同的回调，生成 intents
