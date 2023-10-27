@@ -42,7 +42,7 @@ func (p Processor) ProcessMessage(input string, data *dto.WSATMessageData) error
 			"content": "被动消息测试",
 			"msg_id":  data.ID,
 		}
-		a, err := p.tencentAPI.ExtendedAPI.SendPicToChannelMsg(ctx, data.ChannelID, "resources/图片1.jpg", msgData)
+		a, err := p.tencentAPI.ExtendedAPI.SendPicToChannelMsg(ctx, data.ChannelID, "resource/图片1.jpg", msgData)
 		if err != nil {
 			log.Println(err)
 		}

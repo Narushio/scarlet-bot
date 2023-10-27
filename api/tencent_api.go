@@ -29,11 +29,10 @@ type TencentAPI struct {
 	ExtendedAPI ExtendedAPI
 }
 
-func NewTencentAPI(botToken *token.Token, timeout time.Duration) *TencentAPI {
-	oAPI := botgo.NewSandboxOpenAPI(botToken).WithTimeout(timeout)
+func NewTencentAPI(botToken *token.Token) *TencentAPI {
+	oAPI := botgo.NewSandboxOpenAPI(botToken)
 	eAPI := &extendedAPI{
-		token:   botToken,
-		timeout: timeout,
+		token: botToken,
 	}
 	eAPI.setupClient()
 	return &TencentAPI{
@@ -42,9 +41,14 @@ func NewTencentAPI(botToken *token.Token, timeout time.Duration) *TencentAPI {
 	}
 }
 
+func (t *TencentAPI) WithTimeout(duration time.Duration) *TencentAPI {
+	t.OpenAPI.WithTimeout(duration)
+	t.ExtendedAPI.(*extendedAPI).restyClient.SetTimeout(duration)
+	return t
+}
+
 func (e *extendedAPI) setupClient() {
 	e.restyClient = resty.New().
-		SetTimeout(e.timeout).
 		SetAuthScheme(string(e.token.Type)).
 		SetAuthToken(e.token.GetString()).
 		SetContentLength(true)
