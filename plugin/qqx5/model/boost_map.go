@@ -12,28 +12,70 @@ import (
 )
 
 func init() {
-	initDuoBurstTableList()
+	initDuoBoostMaps()
 }
 
-type DuoBurstTable struct {
+type Mode int
+
+type Pattern int
+
+const (
+	Solo Mode = iota
+	Duo
+)
+
+const (
+	Idol Pattern = iota
+	Pinball
+	Bubble
+	Crescent
+)
+
+func (p *Pattern) String() string {
+	switch *p {
+	case Idol:
+		return "星动"
+	case Pinball:
+		return "弹珠"
+	case Bubble:
+		return "泡泡"
+	case Crescent:
+		return "弦月"
+	default:
+		return "未知"
+	}
+}
+
+func (m *Mode) String() string {
+	switch *m {
+	case Solo:
+		return "单排"
+	case Duo:
+		return "双排"
+	default:
+		return "未知"
+	}
+}
+
+type DuoBoostMap struct {
 	Letter string    `json:"letter"`
 	Title  string    `json:"title"`
-	PhaseA BurstInfo `json:"phase_a"`
-	PhaseB BurstInfo `json:"phase_b"`
+	PhaseA BoostInfo `json:"phase_a"`
+	PhaseB BoostInfo `json:"phase_b"`
 	Memo   string    `json:"memo"`
 }
 
 type Base64Src string
 
-type BurstInfo struct {
+type BoostInfo struct {
 	Description string    `json:"description,omitempty"`
 	Start       Base64Src `json:"start,omitempty"`
 	End         Base64Src `json:"end,omitempty"`
 }
 
-var DuoBurstTableList []*DuoBurstTable
+var DuoBoostMaps []*DuoBoostMap
 
-func initDuoBurstTableList() {
+func initDuoBoostMaps() {
 	jsonFN := "resource/qqx5/kym爆气笔记2023s10.json"
 	xlsxFN := "resource/qqx5/kym爆气笔记2023s10.xlsx"
 	if file.IsExist(jsonFN) {
@@ -42,7 +84,7 @@ func initDuoBurstTableList() {
 			log.Fatal(err)
 		}
 
-		err = json.Unmarshal(b, &DuoBurstTableList)
+		err = json.Unmarshal(b, &DuoBoostMaps)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -68,7 +110,7 @@ func initDuoBurstTableList() {
 		if i == 0 {
 			continue
 		}
-		duoBurstTable := &DuoBurstTable{}
+		duoBurstTable := &DuoBoostMap{}
 		colNames := []string{"D", "E", "G", "H"}
 		for _, c := range colNames {
 			p, err := f.GetPictures("星动双排", fmt.Sprintf("%s%d", c, i+1))
@@ -89,17 +131,22 @@ func initDuoBurstTableList() {
 				}
 			}
 		}
-		duoBurstTable.Letter = row[0]
+
+		if row[0] == "" {
+			duoBurstTable.Letter = DuoBoostMaps[len(DuoBoostMaps)-1].Letter
+		} else {
+			duoBurstTable.Letter = row[0]
+		}
 		duoBurstTable.Title = row[1]
 		duoBurstTable.PhaseA.Description = row[2]
 		duoBurstTable.PhaseB.Description = row[5]
 		if len(row) > 8 {
 			duoBurstTable.Memo = row[8]
 		}
-		DuoBurstTableList = append(DuoBurstTableList, duoBurstTable)
+		DuoBoostMaps = append(DuoBoostMaps, duoBurstTable)
 	}
 
-	b, err := json.Marshal(DuoBurstTableList)
+	b, err := json.Marshal(DuoBoostMaps)
 	if err != nil {
 		log.Fatal(err)
 	}

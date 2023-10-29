@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Narushio/scarlet-bot/helper/random"
 	"github.com/go-resty/resty/v2"
 	"github.com/tencent-connect/botgo"
 	"github.com/tencent-connect/botgo/dto"
@@ -60,8 +59,8 @@ func (e *extendedAPI) PostMessageByFormData(ctx context.Context, channelID strin
 		SetFormData(data).
 		SetResult(dto.Message{}).
 		SetPathParam("channel_id", channelID).
-		SetFileReader("file_image", random.Sha256(), bytes.NewReader(imgContents)).
-		Post(fmt.Sprintf("%s://%s%s", "https", "sandbox.api.sgroup.qq.com", "/channels/{channel_id}/messages"))
+		SetFileReader("file_image", time.Now().String(), bytes.NewReader(imgContents)).
+		Post(fmt.Sprintf("%s://%s%s", "https", "api.sgroup.qq.com", "/channels/{channel_id}/messages"))
 	if err != nil {
 		return nil, err
 	}

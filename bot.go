@@ -6,14 +6,12 @@ import (
 	"log"
 	"path"
 	"runtime"
-	"strings"
 	"time"
 
 	"github.com/Narushio/scarlet-bot/api"
 	"github.com/Narushio/scarlet-bot/processor"
 	"github.com/tencent-connect/botgo"
 	"github.com/tencent-connect/botgo/dto"
-	"github.com/tencent-connect/botgo/dto/message"
 	"github.com/tencent-connect/botgo/event"
 	"github.com/tencent-connect/botgo/token"
 	"github.com/tencent-connect/botgo/websocket"
@@ -124,8 +122,7 @@ func DirectMessageHandler() event.DirectMessageEventHandler {
 // CreateMessageHandler 处理消息事件
 func CreateMessageHandler() event.MessageEventHandler {
 	return func(event *dto.WSPayload, data *dto.WSMessageData) error {
-		input := strings.ToLower(message.ETLInput(data.Content))
-		return proc.ProcessMessage(input, data)
+		return proc.ProcessMessage(data.Content, data)
 	}
 }
 

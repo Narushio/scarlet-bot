@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/Narushio/scarlet-bot/api"
@@ -19,9 +20,10 @@ type Processor struct {
 }
 
 // ProcessMessage is a function to process message
-func (p *Processor) ProcessMessage(input string, data *dto.WSMessageData) error {
+func (p *Processor) ProcessMessage(content string, data *dto.WSMessageData) error {
+	input := strings.ToLower(message.ETLInput(content))
 	ctx := context.Background()
-	handler := NewCmdHandler(p, data, nil)
+	handler := NewCmdHandler(p.TencentAPI, data, nil)
 	cmd := message.ParseCommand(input)
 	err := handler.HandleCmd(ctx, cmd)
 	if err != nil {
