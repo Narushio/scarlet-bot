@@ -1,4 +1,6 @@
 .idea/*
 .tool-versions
 .envrc
-resources
+config.yaml
+resource
+tmp

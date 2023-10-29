@@ -1,11 +1,10 @@
-package main
+package helper
 
 import (
 	"net"
 )
 
-// getIP 一个简易的获取本机 IP 方法
-func getIP() string {
+func GetIP() string {
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		return "0.0.0.0"

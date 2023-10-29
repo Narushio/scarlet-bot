@@ -1,68 +1,40 @@
-package main
+package processor
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
+	"github.com/Narushio/scarlet-bot/api"
+	"github.com/Narushio/scarlet-bot/helper"
 	"github.com/tencent-connect/botgo/dto"
 	"github.com/tencent-connect/botgo/dto/message"
-	"github.com/tencent-connect/botgo/openapi"
 )
 
 // Processor is a struct to process message
 type Processor struct {
-	api openapi.OpenAPI
+	TencentAPI *api.TencentAPI
 }
 
 // ProcessMessage is a function to process message
-func (p Processor) ProcessMessage(input string, data *dto.WSATMessageData) error {
+func (p *Processor) ProcessMessage(content string, data *dto.WSMessageData) error {
+	input := strings.ToLower(message.ETLInput(content))
 	ctx := context.Background()
+	handler := NewCmdHandler(p.TencentAPI, data, nil)
 	cmd := message.ParseCommand(input)
-	toCreate := &dto.MessageToCreate{
-		Content: "默认回复" + message.Emoji(307),
-		MessageReference: &dto.MessageReference{
-			// 引用这条消息
-			MessageID:             data.ID,
-			IgnoreGetMessageError: true,
-		},
-	}
-
-	// 进入到私信逻辑
-	if cmd.Cmd == "dm" {
-		p.dmHandler(data)
-		return nil
-	}
-
-	switch cmd.Cmd {
-	case "hi":
-		p.sendReply(ctx, data.ChannelID, toCreate)
-	case "time":
-		toCreate.Content = genReplyContent(data)
-		p.sendReply(ctx, data.ChannelID, toCreate)
-	case "ark":
-		toCreate.Ark = genReplyArk(data)
-		p.sendReply(ctx, data.ChannelID, toCreate)
-	case "公告":
-		p.setAnnounces(ctx, data)
-	case "pin":
-		if data.MessageReference != nil {
-			p.setPins(ctx, data.ChannelID, data.MessageReference.MessageID)
-		}
-	case "emoji":
-		if data.MessageReference != nil {
-			p.setEmoji(ctx, data.ChannelID, data.MessageReference.MessageID)
-		}
-	default:
+	err := handler.HandleCmd(ctx, cmd)
+	if err != nil {
+		return err
 	}
 
 	return nil
 }
 
 // ProcessInlineSearch is a function to process inline search
-func (p Processor) ProcessInlineSearch(interaction *dto.WSInteractionData) error {
+func (p *Processor) ProcessInlineSearch(interaction *dto.WSInteractionData) error {
 	if interaction.Data.Type != dto.InteractionDataTypeChatSearch {
 		return fmt.Errorf("interaction data type not chat search")
 	}
@@ -92,15 +64,15 @@ func (p Processor) ProcessInlineSearch(interaction *dto.WSInteractionData) error
 		},
 	}
 	body, _ := json.Marshal(searchRsp)
-	if err := p.api.PutInteraction(context.Background(), interaction.ID, string(body)); err != nil {
-		log.Println("api call putInteractionInlineSearch  error: ", err)
+	if err := p.TencentAPI.OpenAPI.PutInteraction(context.Background(), interaction.ID, string(body)); err != nil {
+		log.Println("openAPI call putInteractionInlineSearch  error: ", err)
 		return err
 	}
 	return nil
 }
 
-func (p Processor) dmHandler(data *dto.WSATMessageData) {
-	dm, err := p.api.CreateDirectMessage(
+func (p *Processor) dmHandler(data *dto.WSATMessageData) {
+	dm, err := p.TencentAPI.OpenAPI.CreateDirectMessage(
 		context.Background(), &dto.DirectMessageToCreate{
 			SourceGuildID: data.GuildID,
 			RecipientID:   data.Author.ID,
@@ -114,7 +86,7 @@ func (p Processor) dmHandler(data *dto.WSATMessageData) {
 	toCreate := &dto.MessageToCreate{
 		Content: "默认私信回复",
 	}
-	_, err = p.api.PostDirectMessage(
+	_, err = p.TencentAPI.OpenAPI.PostDirectMessage(
 		context.Background(), dm, toCreate,
 	)
 	if err != nil {
@@ -138,7 +110,7 @@ func genReplyContent(data *dto.WSATMessageData) string {
 		message.MentionUser(data.Author.ID),
 		message.MentionChannel(data.ChannelID),
 		msgTime, time.Now().Format(time.RFC3339),
-		getIP(),
+		helper.GetIP(),
 	)
 }
 
