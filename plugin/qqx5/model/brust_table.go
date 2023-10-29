@@ -2,8 +2,12 @@ package model
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 
+	"github.com/Narushio/scarlet-bot/helper/file"
 	"github.com/xuri/excelize/v2"
 )
 
@@ -22,19 +26,34 @@ type DuoBurstTable struct {
 type Base64Src string
 
 type BurstInfo struct {
-	Description string    `json:"description"`
-	Start       Base64Src `json:"start"`
-	End         Base64Src `json:"end"`
+	Description string    `json:"description,omitempty"`
+	Start       Base64Src `json:"start,omitempty"`
+	End         Base64Src `json:"end,omitempty"`
 }
 
 var DuoBurstTableList []*DuoBurstTable
 
 func initDuoBurstTableList() {
-	f, err := excelize.OpenFile("resource/kym爆气笔记2023s10.xlsx")
-	if err != nil {
-		fmt.Println(err)
+	jsonFN := "resource/qqx5/kym爆气笔记2023s10.json"
+	xlsxFN := "resource/qqx5/kym爆气笔记2023s10.xlsx"
+	if file.IsExist(jsonFN) {
+		b, err := ioutil.ReadFile(jsonFN)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = json.Unmarshal(b, &DuoBurstTableList)
+		if err != nil {
+			log.Fatal(err)
+		}
 		return
 	}
+
+	f, err := excelize.OpenFile(xlsxFN)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	defer func() {
 		if err := f.Close(); err != nil {
 			fmt.Println(err)
@@ -42,8 +61,7 @@ func initDuoBurstTableList() {
 	}()
 	rows, err := f.GetRows("星动双排")
 	if err != nil {
-		fmt.Println(err)
-		return
+		log.Fatal(err)
 	}
 
 	for i, row := range rows {
@@ -55,8 +73,7 @@ func initDuoBurstTableList() {
 		for _, c := range colNames {
 			p, err := f.GetPictures("星动双排", fmt.Sprintf("%s%d", c, i+1))
 			if err != nil {
-				fmt.Println(err)
-				continue
+				log.Fatal(err)
 			}
 
 			if len(p) != 0 {
@@ -80,6 +97,16 @@ func initDuoBurstTableList() {
 			duoBurstTable.Memo = row[8]
 		}
 		DuoBurstTableList = append(DuoBurstTableList, duoBurstTable)
+	}
+
+	b, err := json.Marshal(DuoBurstTableList)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = ioutil.WriteFile(jsonFN, b, 0644)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 

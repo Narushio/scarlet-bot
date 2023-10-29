@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"os"
 	"time"
 
+	"github.com/Narushio/scarlet-bot/helper/random"
 	"github.com/go-resty/resty/v2"
 	"github.com/tencent-connect/botgo"
 	"github.com/tencent-connect/botgo/dto"
@@ -15,7 +15,7 @@ import (
 )
 
 type ExtendedAPI interface {
-	SendPicToChannelMsg(ctx context.Context, channelID string, filename string, data map[string]string) ([]byte, error)
+	PostMessageByFormData(ctx context.Context, channelID string, imgContents []byte, data map[string]string) ([]byte, error)
 }
 
 type extendedAPI struct {
@@ -54,17 +54,13 @@ func (e *extendedAPI) setupClient() {
 		SetContentLength(true)
 }
 
-func (e *extendedAPI) SendPicToChannelMsg(ctx context.Context, channelID string, filename string, data map[string]string) ([]byte, error) {
-	fileContents, err := os.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
+func (e *extendedAPI) PostMessageByFormData(ctx context.Context, channelID string, imgContents []byte, data map[string]string) ([]byte, error) {
 	resp, err := e.restyClient.R().
 		SetContext(ctx).
 		SetFormData(data).
 		SetResult(dto.Message{}).
 		SetPathParam("channel_id", channelID).
-		SetFileReader("file_image", filename, bytes.NewReader(fileContents)).
+		SetFileReader("file_image", random.Sha256(), bytes.NewReader(imgContents)).
 		Post(fmt.Sprintf("%s://%s%s", "https", "sandbox.api.sgroup.qq.com", "/channels/{channel_id}/messages"))
 	if err != nil {
 		return nil, err
