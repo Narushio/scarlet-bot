@@ -7,15 +7,21 @@ import (
 	"strings"
 	"time"
 
+	"github.com/tencent-connect/botgo/dto"
+
 	"github.com/Narushio/scarlet-bot/api"
 	"github.com/Narushio/scarlet-bot/browser"
+	"github.com/Narushio/scarlet-bot/plugin/qqx5/loader"
 	"github.com/Narushio/scarlet-bot/plugin/qqx5/model"
-	"github.com/tencent-connect/botgo/dto"
 )
 
 const (
-	BoostMapUrl = "http://localhost:8000/qqx5/duo-boost-map.html"
+	BoostMapUrl = "http://localhost:8000/qqx5/duo-idol-boost-map.html"
 )
+
+func init() {
+	loader.BoostMapExcel()
+}
 
 type Plugin struct {
 	TencentAPI *api.TencentAPI
@@ -64,8 +70,8 @@ func (p *Plugin) sendBoostMap(ctx context.Context, content string, data *dto.WSM
 
 	var domData []byte
 	if pt == model.Idol && m == model.Duo {
-		var dbm *model.DuoBoostMap
-		for _, d := range model.DuoBoostMaps {
+		var dbm *model.DuoIdolBoostMap
+		for _, d := range model.DuoIdolBoostMapList {
 			if strings.Contains(strings.ToLower(d.Title), content) {
 				dbm = d
 			}
