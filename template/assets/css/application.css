@@ -1,12 +1,12 @@
 @import "bootstrap.min.css";
 
 @font-face {
-  font-family: "HarmonyOS_Sans_Regular";
-  src: url("../font/HarmonyOS_Sans_Regular.ttf");
+  font-family: "AlimamaShuHeiTi-Bold";
+  src: url("../font/AlimamaShuHeiTi-Bold.woff2");
 }
 
 * {
-  font-family: "HarmonyOS_Sans_Regular", serif !important;
+  font-family: "AlimamaShuHeiTi-Bold", serif !important;
   padding: 0;
   margin: 0;
 }

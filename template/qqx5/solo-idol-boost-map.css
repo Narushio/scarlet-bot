@@ -1,0 +1,68 @@
+.main {
+    background-image: url("../assets/img/background-2.jpg");
+    background-size: cover;
+    border-radius: 3%;
+    border: white solid 1px;
+}
+
+.map-card {
+    border-radius: 10px;
+    box-shadow: 0 5px 5px saddlebrown;
+    background-color: orange;
+}
+
+.title-card {
+    border-radius: 10px;
+    box-shadow: 0 5px 5px black;
+    background-color: lightcyan;
+}
+
+.detail-card {
+    border-radius: 10px;
+    box-shadow: 0 5px 5px black;
+    background-color: #EBE8EF;
+    .info-card {
+        border-radius: 10px;
+        box-shadow: 0 5px 5px black;
+        border: 2px solid #3FC6FD;
+        background-color: #FFFFFF;
+        font-size: 1.5rem;
+        .col, .col-3, .col-9 {
+            padding: 10px 0 10px 0;
+            border: #CAE5EE 1px solid;
+        }
+        .has-bg {
+            background-color: #E2F0FB;
+        }
+    }
+
+    .image-card {
+
+        border-radius: 10px;
+    }
+}
+
+.label-card {
+    border-radius: 10px 100px 10px 10px;
+    box-shadow: 0 5px 5px #A3A3A3;
+    background-color: #3FC6FD;
+}
+
+.overlay-text {
+    position: absolute;
+    bottom: -10px;
+    text-align: center;
+    border-radius: 10px;
+    left: -10px;
+    box-shadow: 0 5px 5px #A3A3A3;
+    background-color: #47AEFD;
+    color: white;
+    padding: 5px;
+    width: 17%;
+}
+
+.footer {
+    border-radius: 10px;
+    box-shadow: 0 5px 5px saddlebrown;
+    background-color: orange;
+}
