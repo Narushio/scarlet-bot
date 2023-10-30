@@ -61,6 +61,7 @@ func BoostMapExcel() {
 	}()
 
 	processDuoIdolBoostMap(f)
+	processSoloIdolBoostMap(f)
 }
 
 func processSoloIdolBoostMap(f *excelize.File) {
@@ -72,7 +73,7 @@ func processSoloIdolBoostMap(f *excelize.File) {
 			log.Fatal(err)
 		}
 
-		for i, _ := range rows {
+		for i, row := range rows {
 			if i == 0 {
 				continue
 			}
@@ -94,19 +95,26 @@ func processSoloIdolBoostMap(f *excelize.File) {
 				}
 			}
 
-			// Todo: assign SoloIdolBoostMap
-			//if row[0] == "" {
-			//	boostMap.Letter = model.SoloIdolBoostMapList[len(model.SoloIdolBoostMapList)-1].Letter
-			//} else {
-			//	boostMap.Letter = row[0]
-			//}
-			//boostMap.Title = row[1]
-			//boostMap.BoostInfo.Description = row[2]
-			//boostMap.BoostInfo.Description = row[5]
-			//if len(row) > 8 {
-			//	boostMap.Memo = row[8]
-			//}
-			//model.SoloIdolBoostMapList = append(model.SoloIdolBoostMapList, boostMap)
+			if row[0] == "" {
+				boostMap.Letter = model.SoloIdolBoostMapList[len(model.SoloIdolBoostMapList)-1].Letter
+			} else {
+				boostMap.Letter = row[0]
+			}
+			boostMap.Title = row[1]
+			boostMap.Rating = row[2]
+			boostMap.MapRating = row[3]
+			boostMap.MapDifficulty = row[4]
+			boostMap.BoostDifficulty = row[5]
+			boostMap.Recommend = row[6]
+			boostInfoColumnIndex := 8
+			if len(row) > boostInfoColumnIndex {
+				boostMap.BoostInfo.Description = row[7]
+				boostMap.Memo = row[10]
+				boostMap.TheoryScore = row[11]
+				boostMap.HalfCombo = row[12]
+				boostMap.Comment = row[13]
+			}
+			model.SoloIdolBoostMapList = append(model.SoloIdolBoostMapList, boostMap)
 		}
 
 		writeJson(SoloIdolBoostMapListFilePath, model.SoloIdolBoostMapList)
@@ -156,7 +164,8 @@ func processDuoIdolBoostMap(f *excelize.File) {
 			boostMap.Title = row[1]
 			boostMap.PhaseA.Description = row[2]
 			boostMap.PhaseB.Description = row[5]
-			if len(row) > 8 {
+			boostEndColumnIndex := 8
+			if len(row) > boostEndColumnIndex {
 				boostMap.Memo = row[8]
 			}
 			model.DuoIdolBoostMapList = append(model.DuoIdolBoostMapList, boostMap)

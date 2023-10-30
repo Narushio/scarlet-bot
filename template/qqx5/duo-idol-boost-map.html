@@ -28,7 +28,7 @@
             <div className="row justify-content-center main">
                 <div className="row py-2">
                     <div className="col text-center align-self-center">
-                        <h1 className="text-light">2v2排位星动 - {title || "什么都没有"}</h1>
+                        <h1 className="text-black">2v2排位星动 - {title || "什么都没有"}</h1>
                     </div>
                 </div>
                 <div className="row py-2 justify-content-center">
@@ -40,7 +40,7 @@
                     <div className="row">
                         <div className="col">
                             <div className="card">
-                                {phaseA.start ? <img src={phaseA.start} className="card-img"/> : <img src="../assets/img/404-not-found.png" className="card-img"/>}
+                                {phaseA.start ? <img src={phaseA.start} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
                                 <div className="card-img-overlay">
                                     <h5 className={`card-title ${phaseA.start ? "text-light" : "text-black"}`}>爆点开始图</h5>
                                 </div>
@@ -48,7 +48,7 @@
                         </div>
                         <div className="col">
                             <div className="card">
-                                {phaseA.end ? <img src={phaseA.end} className="card-img"/> : <img src="../assets/img/404-not-found.png" className="card-img"/>}
+                                {phaseA.end ? <img src={phaseA.end} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
                                 <div className="card-img-overlay">
                                     <h5 className={`card-title ${phaseA.end ? "text-light" : "text-black"}`}>爆点结束图</h5>
                                 </div>
@@ -65,7 +65,7 @@
                     <div className="row">
                         <div className="col">
                             <div className="card">
-                                {phaseB.start ? <img src={phaseB.start} className="card-img"/> : <img src="../assets/img/404-not-found.png" className="card-img"/>}
+                                {phaseB.start ? <img src={phaseB.start} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
                                 <div className="card-img-overlay">
                                     <h5 className={`card-title ${phaseB.start ? "text-light" : "text-black"}`}>爆点开始图</h5>
                                 </div>
@@ -73,7 +73,7 @@
                         </div>
                         <div className="col">
                             <div className="card">
-                                {phaseB.end ? <img src={phaseB.end} className="card-img"/> : <img src="../assets/img/404-not-found.png" className="card-img"/>}
+                                {phaseB.end ? <img src={phaseB.end} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
                                 <div className="card-img-overlay">
                                     <h5 className={`card-title ${phaseB.end ? "text-light" : "text-black"}`}>爆点结束图</h5>
                                 </div>

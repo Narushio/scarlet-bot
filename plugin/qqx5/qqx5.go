@@ -3,10 +3,13 @@ package qqx5
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"reflect"
 	"strings"
 	"time"
 
+	"github.com/playwright-community/playwright-go"
 	"github.com/tencent-connect/botgo/dto"
 
 	"github.com/Narushio/scarlet-bot/api"
@@ -16,7 +19,8 @@ import (
 )
 
 const (
-	BoostMapUrl = "http://localhost:8000/qqx5/duo-idol-boost-map.html"
+	DuoIdolBoostMapUrl  = "http://localhost:8000/qqx5/duo-idol-boost-map.html"
+	SoloIdolBoostMapUrl = "http://localhost:8000/qqx5/solo-idol-boost-map.html"
 )
 
 func init() {
@@ -38,6 +42,10 @@ func (p *Plugin) SendReplay(ctx context.Context, content string, data *dto.WSMes
 	switch cmdPrefix {
 	case "双排星动爆点":
 		if err := p.sendBoostMap(ctx, content, data, atData, model.Idol, model.Duo); err != nil {
+			return err
+		}
+	case "单排星动爆点":
+		if err := p.sendBoostMap(ctx, content, data, atData, model.Idol, model.Solo); err != nil {
 			return err
 		}
 	}
@@ -64,22 +72,10 @@ func (p *Plugin) sendBoostMap(ctx context.Context, content string, data *dto.WSM
 	if err != nil {
 		return err
 	}
-	if _, err = page.Goto(BoostMapUrl); err != nil {
-		return err
-	}
 
-	var domData []byte
-	if pt == model.Idol && m == model.Duo {
-		var dbm *model.DuoIdolBoostMap
-		for _, d := range model.DuoIdolBoostMapList {
-			if strings.Contains(strings.ToLower(d.Title), content) {
-				dbm = d
-			}
-		}
-		domData, err = json.Marshal(dbm)
-		if err != nil {
-			return err
-		}
+	domData, err := fetchDomData(pt, m, content, page)
+	if err != nil {
+		return err
 	}
 
 	_, err = page.Evaluate(fmt.Sprintf("initDom(%s)", string(domData)))
@@ -103,4 +99,51 @@ func (p *Plugin) sendBoostMap(ctx context.Context, content string, data *dto.WSM
 	}
 
 	return nil
+}
+
+func fetchDomData(pt model.Pattern, m model.Mode, content string, page playwright.Page) ([]byte, error) {
+	var url string
+	var mapList []interface{}
+	var err error
+	switch {
+	case pt == model.Idol && m == model.Duo:
+		url = DuoIdolBoostMapUrl
+		mapList = interfaceSlice(model.DuoIdolBoostMapList)
+	case pt == model.Idol && m == model.Solo:
+		url = SoloIdolBoostMapUrl
+		mapList = interfaceSlice(model.SoloIdolBoostMapList)
+	default:
+		return nil, errors.New("invalid pattern or mode")
+	}
+
+	var mapData []byte
+	for _, d := range mapList {
+		title := reflect.ValueOf(d).Elem().FieldByName("Title").String()
+		if strings.Contains(strings.ToLower(title), content) {
+			mapData, err = json.Marshal(d)
+			if err != nil {
+				return nil, err
+			}
+			break
+		}
+	}
+
+	if _, err = page.Goto(url); err != nil {
+		return nil, err
+	}
+
+	return mapData, nil
+}
+
+func interfaceSlice(slice interface{}) []interface{} {
+	values := reflect.ValueOf(slice)
+	if values.Kind() != reflect.Slice {
+		return nil
+	}
+
+	result := make([]interface{}, values.Len())
+	for i := 0; i < values.Len(); i++ {
+		result[i] = values.Index(i).Interface()
+	}
+	return result
 }
