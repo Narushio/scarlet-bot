@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Duo Idol Boost Map</title>
     <link rel="stylesheet" href="../assets/css/application.css">
-    <link rel="stylesheet" href="duo-idol-boost-map.css">
+    <link rel="stylesheet" href="boost-map.css">
     <script src="../assets/js/bootstrap.bundle.min.js"></script>
     <script src="../assets/js/react.production.min.js"></script>
     <script src="../assets/js/react-dom.production.min.js"></script>
@@ -25,99 +25,62 @@
         const { phaseB } = formatData
 
         return <div className="container">
-            <div className="row justify-content-center main">
-                <div className="row py-2">
-                    <div className="col text-center align-self-center">
-                        <h1 className="text-black">2v2排位星动 - {title || "什么都没有"}</h1>
-                    </div>
-                </div>
-                <div className="row py-2 justify-content-center">
-                    <div className="row mb-2 rounded-2 bg-light bg-opacity-75" style={{width: "95.5%"}}>
-                        <h5 className="text-black">A段爆点描述</h5>
-                        <hr/>
-                        <p className="text-black fs-5">{phaseA.description || "什么都没有"}</p>
-                    </div>
-                    <div className="row">
-                        <div className="col">
-                            <div className="card">
-                                {phaseA.start ? <img src={phaseA.start} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
-                                <div className="card-img-overlay">
-                                    <h5 className={`card-title ${phaseA.start ? "text-light" : "text-black"}`}>爆点开始图</h5>
-                                </div>
-                            </div>
+            <div className="row justify-content-center w-75 main">
+                <div className="row map-card justify-content-center my-3" style={{width: "90%"}}>
+                    <div className="row title-card mt-3">
+                        <div className="col-8 d-flex align-self-center">
+                            <h1>{title || "Unknown"}</h1>
                         </div>
-                        <div className="col">
-                            <div className="card">
-                                {phaseA.end ? <img src={phaseA.end} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
-                                <div className="card-img-overlay">
-                                    <h5 className={`card-title ${phaseA.end ? "text-light" : "text-black"}`}>爆点结束图</h5>
-                                </div>
-                            </div>
+                        <div className="col-4 d-flex align-self-center justify-content-end">
+                            <h2>2v2排位星动</h2>
                         </div>
                     </div>
-                </div>
-                <div className="row py-2 justify-content-center">
-                    <div className="row mb-2 rounded-2 bg-light bg-opacity-75" style={{width: "95.5%"}}>
-                        <h5 className="text-black">B段爆点描述</h5>
-                        <hr/>
-                        <p className="text-black fs-5">{phaseB.description || "什么都没有"}</p>
-                    </div>
-                    <div className="row">
-                        <div className="col">
-                            <div className="card">
-                                {phaseB.start ? <img src={phaseB.start} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
-                                <div className="card-img-overlay">
-                                    <h5 className={`card-title ${phaseB.start ? "text-light" : "text-black"}`}>爆点开始图</h5>
-                                </div>
+                    <div className="row detail-card my-3">
+                        <div className="col-12">
+                            <div className="row row-cols-4 info-card text-center mt-3">
+                                <div className="col-3 has-bg">备注</div>
+                                <div className="col-9 has-bg">{!memo && "什么都没有"}</div>
                             </div>
                         </div>
-                        <div className="col">
-                            <div className="card">
-                                {phaseB.end ? <img src={phaseB.end} className="card-img"/> : <img src="../assets/img/null.jpg" className="card-img"/>}
-                                <div className="card-img-overlay">
-                                    <h5 className={`card-title ${phaseB.end ? "text-light" : "text-black"}`}>爆点结束图</h5>
-                                </div>
+                        <div className="col-8 my-3 label-card">
+                            <h2 className="text-light">Phase A Boost Description</h2>
+                        </div>
+                        <div className="col-12">
+                            <div className="row info-card text-center">
+                                <div className="col">{phaseA.description || "什么都没有"}</div>
+                            </div>
+                            <div className="row info-card mt-3 position-relative">
+                                <div className="overlay-text">Boost Start</div>
+                                {phaseA.start ? <img src={phaseA.start}/> : <img src="../assets/img/null.jpg"/>}
+                            </div>
+                            <div className="row info-card my-3 position-relative">
+                                <div className="overlay-text">Boost End</div>
+                                {phaseA.end ? <img src={phaseA.end}/> : <img src="../assets/img/null.jpg"/>}
+                            </div>
+                        </div>
+                        <div className="col-8 my-3 label-card">
+                            <h2 className="text-light">Phase B Boost Description</h2>
+                        </div>
+                        <div className="col-12">
+                            <div className="row info-card text-center">
+                                <div className="col">{phaseB.description || "什么都没有"}</div>
+                            </div>
+                            <div className="row info-card mt-3 position-relative">
+                                <div className="overlay-text">Boost Start</div>
+                                {phaseB.start ? <img src={phaseB.start}/> : <img src="../assets/img/null.jpg"/>}
+                            </div>
+                            <div className="row info-card my-3 position-relative">
+                                <div className="overlay-text">Boost End</div>
+                                {phaseB.end ? <img src={phaseB.end}/> : <img src="../assets/img/null.jpg"/>}
                             </div>
                         </div>
                     </div>
                 </div>
-                <div className="row justify-content-center py-2">
-                    <h5 className="text-light">备注：{memo || "什么都没有"}</h5>
-                </div>
-                <div className="d-flex justify-content-end">
-                    <h5 className="text-light align-self-center">GENERATE BY SCARLET-BOT</h5>
-                    <img style={{width: "100px"}} src="../assets/img/footer.png"/>
+                <div className="row footer mb-3 text-center" style={{width: "90%"}}>
+                    <h1 className="text-light">GENERATE BY SCARLET-BOT<img style={{width: "10%"}} src="../assets/img/footer.png"/></h1>
                 </div>
             </div>
         </div>
-    }
-
-    const data = {
-        title: "夏日回音",
-        phaseA: {
-            description: "A(115) 右手条拐完爆左手条头\n" +
-                "（没去过的风景「~」）\n" +
-                "\n" +
-                "收手 右手弓条完抢14轨双押\n" +
-                "（不会有救兵～ 哈~哈~哈~ 「没」说完的话）\n" +
-                "\n" +
-                "警告：“每失眠的夜 不会有救兵”“救兵”对应165cb\n" +
-                "1轨单点和2轨条，此处2轨条务必右手接；\n" +
-                "“没遗憾的人 从不计代价”“计代”对应303cb的\n" +
-                "4轨单点和3轨条，此处3轨条务必左手接"
-        },
-        phaseB: {
-            description: "A(247) 左手条拐前一点点爆\n" +
-                "（没过完的夏 没时间算了「吧」）\n" +
-                "\n" +
-                "收手 左手弓条尾拐\n" +
-                "（从不计代价 呀呀呀「~」）\n" +
-                "\n" +
-                "警告：“每失眠的夜 不会有救兵”“救兵”对应165cb\n" +
-                "1轨单点和2轨条，此处2轨条务必右手接；\n" +
-                "“没遗憾的人 从不计代价”“计代”对应303cb的\n" +
-                "4轨单点和3轨条，此处3轨条务必左手接"
-        }
     }
 
     const initDom = (data) => {
