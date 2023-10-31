@@ -24,6 +24,13 @@
         const { phaseA } = formatData
         const { phaseB } = formatData
 
+        function renderWithLineBreaks(text) {
+            const lines = text.split("\n")
+            return lines.map((line, index) => (
+                <p key={index}>{line}</p>
+            ))
+        }
+
         return <div className="container">
             <div className="row justify-content-center w-75 main">
                 <div className="row map-card justify-content-center my-3" style={{width: "90%"}}>
@@ -43,11 +50,11 @@
                             </div>
                         </div>
                         <div className="col-8 my-3 label-card">
-                            <h2 className="text-light">Phase A Boost Description</h2>
+                            <h2 className="text-light">First Turn Description</h2>
                         </div>
                         <div className="col-12">
                             <div className="row info-card text-center">
-                                <div className="col">{phaseA.description || "什么都没有"}</div>
+                                <div className="col">{phaseA.description ? renderWithLineBreaks(phaseA.description) :"什么都没有"}</div>
                             </div>
                             <div className="row info-card mt-3 position-relative">
                                 <div className="overlay-text">Boost Start</div>
@@ -59,11 +66,11 @@
                             </div>
                         </div>
                         <div className="col-8 my-3 label-card">
-                            <h2 className="text-light">Phase B Boost Description</h2>
+                            <h2 className="text-light">Second Turn Description</h2>
                         </div>
                         <div className="col-12">
                             <div className="row info-card text-center">
-                                <div className="col">{phaseB.description || "什么都没有"}</div>
+                                <div className="col">{phaseB.description ? renderWithLineBreaks(phaseB.description) :"什么都没有"}</div>
                             </div>
                             <div className="row info-card mt-3 position-relative">
                                 <div className="overlay-text">Boost Start</div>

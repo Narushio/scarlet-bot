@@ -29,6 +29,13 @@
     const { halfCombo } = formatData
     const { boostInfo } = formatData
 
+    function renderWithLineBreaks(text) {
+      const lines = text.split("\n")
+      return lines.map((line, index) => (
+              <p key={index}>{line}</p>
+      ))
+    }
+
     return <div className="container">
       <div className="row justify-content-center w-75 main">
         <div className="row map-card justify-content-center my-3" style={{width: "90%"}}>
@@ -63,11 +70,11 @@
               </div>
             </div>
             <div className="col-6 my-3 label-card">
-              <h2 className="text-light">Boost Description</h2>
+              <h2 className="text-light">Description</h2>
             </div>
             <div className="col-12">
               <div className="row info-card text-center">
-                <div className="col">{boostInfo.description || "什么都没有"}</div>
+                <div className="col">{boostInfo.description ? renderWithLineBreaks(boostInfo.description) :"什么都没有"}</div>
               </div>
               <div className="row info-card mt-3 position-relative">
                 <div className="overlay-text">Boost Start</div>
