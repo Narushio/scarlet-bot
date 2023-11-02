@@ -5,16 +5,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"reflect"
 	"strings"
 	"time"
 
+	"github.com/Narushio/scarlet-bot/plugin/qqx5/loader"
 	"github.com/playwright-community/playwright-go"
 	"github.com/tencent-connect/botgo/dto"
 
 	"github.com/Narushio/scarlet-bot/api"
 	"github.com/Narushio/scarlet-bot/browser"
-	"github.com/Narushio/scarlet-bot/plugin/qqx5/loader"
 	"github.com/Narushio/scarlet-bot/plugin/qqx5/model"
 )
 
@@ -23,15 +24,16 @@ const (
 	SoloIdolBoostMapUrl = "http://localhost:8000/qqx5/solo-idol-boost-map.html"
 )
 
-func init() {
-	loader.BoostMapExcel()
-}
-
 type Plugin struct {
 	TencentAPI *api.TencentAPI
 }
 
 func New(api *api.TencentAPI) *Plugin {
+	err := loader.AllBoostMapList()
+	if err != nil {
+		log.Fatalf(err.Error())
+	}
+
 	return &Plugin{TencentAPI: api}
 }
 
