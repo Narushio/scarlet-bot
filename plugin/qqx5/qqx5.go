@@ -13,6 +13,7 @@ import (
 	"github.com/Narushio/scarlet-bot/plugin/qqx5/loader"
 	"github.com/playwright-community/playwright-go"
 	"github.com/tencent-connect/botgo/dto"
+	"github.com/tencent-connect/botgo/dto/message"
 
 	"github.com/Narushio/scarlet-bot/api"
 	"github.com/Narushio/scarlet-bot/browser"
@@ -25,7 +26,7 @@ const (
 )
 
 type Plugin struct {
-	TencentAPI *api.TencentAPI
+	API *api.TencentAPI
 }
 
 func New(api *api.TencentAPI) *Plugin {
@@ -34,7 +35,37 @@ func New(api *api.TencentAPI) *Plugin {
 		log.Fatalf(err.Error())
 	}
 
-	return &Plugin{TencentAPI: api}
+	return &Plugin{API: api}
+}
+
+func (*Plugin) VerifyCmd(cmd message.CMD) bool {
+	return cmd.Cmd == "qqx5"
+}
+
+func parseCmdContent(content string) (subCmd string, text string) {
+	c := strings.Split(content, " ")
+	subCmd = c[0]
+	text = c[1]
+	return
+}
+
+func (p *Plugin) HandleMessageData(ctx context.Context, content string, data *dto.WSMessageData) error {
+	subCmd, text := parseCmdContent(content)
+	if subCmd == "双排星动爆点" || subCmd == "双排星动" || subCmd == "星动双排" {
+		if err := p.sendBoostMap(ctx, subCmd, text, data); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (p *Plugin) HandleATMessageData(ctx context.Context, data *dto.WSATMessageData) error {
+	return nil
+}
+
+func (p *Plugin) HandleDirectMessageData(ctx context.Context, data *dto.WSDirectMessageData) error {
+	return nil
 }
 
 func (p *Plugin) SendReplay(ctx context.Context, content string, data *dto.WSMessageData, atData *dto.WSATMessageData) error {
@@ -96,7 +127,7 @@ func (p *Plugin) sendBoostMap(ctx context.Context, content string, data *dto.WSM
 		"msg_id":  msgID,
 	}
 
-	if _, err := p.TencentAPI.ExtendedAPI.PostMessageByFormData(ctx, channelID, imgContents, msgData); err != nil {
+	if _, err := p.API.ExtendedAPI.PostMessageByFormData(ctx, channelID, imgContents, msgData); err != nil {
 		return err
 	}
 
