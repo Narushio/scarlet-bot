@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Solo Idol Boost Map</title>
   <link rel="stylesheet" href="../assets/css/application.css">
-  <link rel="stylesheet" href="solo-idol-boost-map.css">
+  <link rel="stylesheet" href="boost-map.css">
   <script src="../assets/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/react.production.min.js"></script>
   <script src="../assets/js/react-dom.production.min.js"></script>
@@ -21,15 +21,20 @@
     const formatData = SnakeToCamelConverter.convertKeys(data);
     const { title } = formatData
     const { memo } = formatData
-    const { rating } = formatData
     const { mapRating } = formatData
     const { mapDifficulty } = formatData
     const { boostDifficulty } = formatData
     const { recommend } = formatData
     const { theoryScore } = formatData
     const { halfCombo } = formatData
-    const { comment } = formatData
     const { boostInfo } = formatData
+
+    function renderWithLineBreaks(text) {
+      const lines = text.split("\n")
+      return lines.map((line, index) => (
+              <p key={index}>{line}</p>
+      ))
+    }
 
     return <div className="container">
       <div className="row justify-content-center w-75 main">
@@ -48,32 +53,28 @@
             </div>
             <div className="col-12">
               <div className="row row-cols-4 info-card text-center">
-                <div className="col">歌曲评分</div>
-                <div className="col">{rating || "/"}</div>
                 <div className="col">谱面评分</div>
                 <div className="col">{mapRating || "/"}</div>
-                <div className="col has-bg">谱面定数</div>
-                <div className="col has-bg">{mapDifficulty || "/"}</div>
+                <div className="col">谱面定数</div>
+                <div className="col">{mapDifficulty || "/"}</div>
                 <div className="col has-bg">爆气难度</div>
                 <div className="col has-bg">{boostDifficulty || "/"}</div>
-                <div className="col">推荐指数</div>
-                <div className="col">{recommend || "/"}</div>
+                <div className="col has-bg">推荐指数</div>
+                <div className="col has-bg">{recommend || "/"}</div>
                 <div className="col">半combo</div>
                 <div className="col">{halfCombo || "/"}</div>
-                <div className="col-3 has-bg">理论值</div>
-                <div className="col-9 has-bg">{theoryScore || "/"}</div>
-                <div className="col-3">备注</div>
-                <div className="col-9">{!memo && "什么都没有"}</div>
-                <div className="col-3 has-bg">简评</div>
-                <div className="col-9 has-bg">{comment || "什么都没有"}</div>
+                <div className="col">理论值</div>
+                <div className="col">{theoryScore || "/"}</div>
+                <div className="col-3 has-bg">备注</div>
+                <div className="col-9 has-bg">{!memo && "什么都没有"}</div>
               </div>
             </div>
             <div className="col-6 my-3 label-card">
-              <h2 className="text-light">Boost Description</h2>
+              <h2 className="text-light">Description</h2>
             </div>
             <div className="col-12">
               <div className="row info-card text-center">
-                <div className="col">{boostInfo.description || "什么都没有"}</div>
+                <div className="col">{boostInfo.description ? renderWithLineBreaks(boostInfo.description) :"什么都没有"}</div>
               </div>
               <div className="row info-card mt-3 position-relative">
                 <div className="overlay-text">Boost Start</div>
@@ -91,22 +92,6 @@
         </div>
       </div>
     </div>
-  }
-
-  const data = {
-    title: "夏日回音",
-    boostInfo: {
-      description: "A(115) 右手条拐完爆左手条头\n" +
-              "（没去过的风景「~」）\n" +
-              "\n" +
-              "收手 右手弓条完抢14轨双押\n" +
-              "（不会有救兵～ 哈~哈~哈~ 「没」说完的话）\n" +
-              "\n" +
-              "警告：“每失眠的夜 不会有救兵”“救兵”对应165cb\n" +
-              "1轨单点和2轨条，此处2轨条务必右手接；\n" +
-              "“没遗憾的人 从不计代价”“计代”对应303cb的\n" +
-              "4轨单点和3轨条，此处3轨条务必左手接"
-    }
   }
 
   const initDom = (data) => {
