@@ -10,8 +10,6 @@ import (
 	"github.com/Narushio/scarlet-bot/helper/image"
 )
 
-const DuoIdolBoostMapJsonPath = "resource/qqx5/duo_idol_boost_maps.json"
-
 type DuoIdolBoostMap struct {
 	Letter string    `json:"letter"`
 	Title  string    `json:"title"`
@@ -20,19 +18,35 @@ type DuoIdolBoostMap struct {
 	Memo   string    `json:"memo"`
 }
 
-var DuoIdolBoostMapList []*DuoIdolBoostMap
+func (m *DuoIdolBoostMap) GetJsonPath() string {
+	return "resources/qqx5/duo_idol_boost_maps.json"
+}
+
+func (m *DuoIdolBoostMap) GetExcelSheetName() string {
+	return "星动双排"
+}
+
+func (m *DuoIdolBoostMap) GetTemplateUrl() string {
+	return "http://localhost:8000/qqx5/duo-idol-boost-map.html"
+}
+
+func (m *DuoIdolBoostMap) GetTitle() string {
+	return m.Title
+}
+
+var DuoIdolBoostMaps []*DuoIdolBoostMap
 
 func (m *DuoIdolBoostMap) UnmarshalFromJson() error {
-	list, err := file.ReadJson[[]*DuoIdolBoostMap](DuoIdolBoostMapJsonPath)
+	maps, err := file.ReadJson[[]*DuoIdolBoostMap](m.GetJsonPath())
 	if err != nil {
 		return err
 	}
-	DuoIdolBoostMapList = list
+	DuoIdolBoostMaps = maps
 	return nil
 }
 
 func (m *DuoIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
-	rows, err := f.GetRows("星动双排")
+	rows, err := f.GetRows(m.GetExcelSheetName())
 	if err != nil {
 		return err
 	}
@@ -44,7 +58,7 @@ func (m *DuoIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
 		boostMap := &DuoIdolBoostMap{}
 		colNames := []string{"D", "E", "G", "H"}
 		for _, c := range colNames {
-			p, err := f.GetPictures("星动双排", fmt.Sprintf("%s%d", c, i+1))
+			p, err := f.GetPictures(m.GetExcelSheetName(), fmt.Sprintf("%s%d", c, i+1))
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -64,7 +78,7 @@ func (m *DuoIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
 		}
 
 		if row[0] == "" {
-			boostMap.Letter = DuoIdolBoostMapList[len(DuoIdolBoostMapList)-1].Letter
+			boostMap.Letter = DuoIdolBoostMaps[len(DuoIdolBoostMaps)-1].Letter
 		} else {
 			boostMap.Letter = row[0]
 		}
@@ -75,10 +89,10 @@ func (m *DuoIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
 		if len(row) > boostEndColumnIndex {
 			boostMap.Memo = row[8]
 		}
-		DuoIdolBoostMapList = append(DuoIdolBoostMapList, boostMap)
+		DuoIdolBoostMaps = append(DuoIdolBoostMaps, boostMap)
 	}
 
-	err = file.WriteJson(DuoIdolBoostMapJsonPath, DuoIdolBoostMapList)
+	err = file.WriteJson(m.GetJsonPath(), DuoIdolBoostMaps)
 	if err != nil {
 		return err
 	}

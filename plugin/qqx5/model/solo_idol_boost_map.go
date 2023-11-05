@@ -9,8 +9,6 @@ import (
 	"github.com/Narushio/scarlet-bot/helper/image"
 )
 
-const SoloIdolBoostMapJsonPath = "resources/qqx5/solo_idol_boost_maps.json"
-
 type SoloIdolBoostMap struct {
 	Letter          string    `json:"letter"`
 	Title           string    `json:"title"`
@@ -26,19 +24,35 @@ type SoloIdolBoostMap struct {
 	Comment         string    `json:"comment"`
 }
 
-var SoloIdolBoostMapList []*SoloIdolBoostMap
+func (m *SoloIdolBoostMap) GetJsonPath() string {
+	return "resources/qqx5/solo_idol_boost_maps.json"
+}
+
+func (m *SoloIdolBoostMap) GetExcelSheetName() string {
+	return "星动"
+}
+
+func (m *SoloIdolBoostMap) GetTemplateUrl() string {
+	return "http://localhost:8000/qqx5/solo-idol-boost-map.html"
+}
+
+func (m *SoloIdolBoostMap) GetTitle() string {
+	return m.Title
+}
+
+var SoloIdolBoostMaps []*SoloIdolBoostMap
 
 func (m *SoloIdolBoostMap) UnmarshalFromJson() error {
-	list, err := file.ReadJson[[]*SoloIdolBoostMap](SoloIdolBoostMapJsonPath)
+	maps, err := file.ReadJson[[]*SoloIdolBoostMap](m.GetJsonPath())
 	if err != nil {
 		return err
 	}
-	SoloIdolBoostMapList = list
+	SoloIdolBoostMaps = maps
 	return nil
 }
 
 func (m *SoloIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
-	rows, err := f.GetRows("星动")
+	rows, err := f.GetRows(m.GetExcelSheetName())
 	if err != nil {
 		return err
 	}
@@ -50,7 +64,7 @@ func (m *SoloIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
 		boostMap := &SoloIdolBoostMap{}
 		boostPicColNameList := []string{"I", "J"}
 		for _, n := range boostPicColNameList {
-			p, err := f.GetPictures("星动", fmt.Sprintf("%s%d", n, i+1))
+			p, err := f.GetPictures(m.GetExcelSheetName(), fmt.Sprintf("%s%d", n, i+1))
 			if err != nil {
 				return err
 			}
@@ -66,7 +80,7 @@ func (m *SoloIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
 		}
 
 		if row[0] == "" {
-			boostMap.Letter = SoloIdolBoostMapList[len(SoloIdolBoostMapList)-1].Letter
+			boostMap.Letter = SoloIdolBoostMaps[len(SoloIdolBoostMaps)-1].Letter
 		} else {
 			boostMap.Letter = row[0]
 		}
@@ -84,10 +98,10 @@ func (m *SoloIdolBoostMap) UnmarshalFromExcel(f *excelize.File) error {
 			boostMap.HalfCombo = row[12]
 			boostMap.Comment = row[13]
 		}
-		SoloIdolBoostMapList = append(SoloIdolBoostMapList, boostMap)
+		SoloIdolBoostMaps = append(SoloIdolBoostMaps, boostMap)
 	}
 
-	err = file.WriteJson(SoloIdolBoostMapJsonPath, SoloIdolBoostMapList)
+	err = file.WriteJson(m.GetJsonPath(), SoloIdolBoostMaps)
 	if err != nil {
 		return err
 	}

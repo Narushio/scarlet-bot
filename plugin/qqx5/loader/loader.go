@@ -18,7 +18,7 @@ type BoostMap interface {
 	UnmarshalFromExcel(f *excelize.File) error
 }
 
-func AllBoostMapList() error {
+func AllBoostMaps() error {
 	f, err := excelize.OpenFile(BoostMapExcelPath)
 	if err != nil {
 		return err
