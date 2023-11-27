@@ -7,13 +7,15 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/go-redis/redis/v8"
+	"github.com/google/uuid"
+
 	"github.com/Narushio/scarlet-bot/pkg/dto"
 	"github.com/Narushio/scarlet-bot/pkg/log"
 	"github.com/Narushio/scarlet-bot/pkg/sessions/manager"
 	"github.com/Narushio/scarlet-bot/pkg/sessions/remote/lock"
 	"github.com/Narushio/scarlet-bot/pkg/token"
 	"github.com/Narushio/scarlet-bot/pkg/websocket"
-	"github.com/google/uuid"
 )
 
 const (

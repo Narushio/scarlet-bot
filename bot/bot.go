@@ -9,32 +9,16 @@ import (
 
 	"github.com/Narushio/scarlet-bot/handler"
 	"github.com/Narushio/scarlet-bot/pkg"
-	"github.com/Narushio/scarlet-bot/pkg/openapi"
 	"github.com/Narushio/scarlet-bot/pkg/token"
 	"github.com/Narushio/scarlet-bot/pkg/websocket"
 )
 
 type ScarletBot struct {
-	API     openapi.OpenAPI
-	Plugins []*Plugin
+	Version string
 }
 
 func NewScarletBot() *ScarletBot {
-	return &ScarletBot{
-		Plugins: make([]*Plugin, 0),
-	}
-}
-
-func (sb *ScarletBot) AddPlugin(p *Plugin) {
-	sb.Plugins = append(sb.Plugins, p)
-}
-
-func (sb *ScarletBot) DeletePlugin(pluginName string) {
-	for i, p := range sb.Plugins {
-		if p.Name == pluginName {
-			sb.Plugins = append(sb.Plugins[:i], sb.Plugins[i+1:]...)
-		}
-	}
+	return &ScarletBot{Version: "1.0.0"}
 }
 
 func (sb *ScarletBot) LinkStart() error {
@@ -44,9 +28,9 @@ func (sb *ScarletBot) LinkStart() error {
 		return err
 	}
 
-	sb.API = pkg.NewOpenAPI(botToken).WithTimeout(3 * time.Second)
+	api := pkg.NewOpenAPI(botToken).WithTimeout(3 * time.Second)
 
-	wsInfo, err := sb.API.WS(ctx, nil, "")
+	wsInfo, err := api.WS(ctx, nil, "")
 	if err != nil {
 		return err
 	}
@@ -69,7 +53,7 @@ func (sb *ScarletBot) LinkStart() error {
 		// 私信，目前只有私域才能够收到这个，如果你的机器人不是私域机器人，会导致连接报错，那么启动 example 就需要注释掉这个回调
 		handler.DirectMessage(),
 		// 频道消息，只有私域才能够收到这个，如果你的机器人不是私域机器人，会导致连接报错，那么启动 example 就需要注释掉这个回调
-		handler.Message(),
+		handler.Message(ctx, api),
 		// 互动事件
 		handler.Interaction(),
 		// 发帖事件
