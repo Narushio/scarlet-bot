@@ -6,7 +6,7 @@ import (
 	"github.com/playwright-community/playwright-go"
 )
 
-var Chromiun playwright.Browser
+var Chromium playwright.Browser
 
 func LaunchChromium() {
 	pw, err := playwright.Run()
@@ -17,5 +17,5 @@ func LaunchChromium() {
 	if err != nil {
 		log.Fatalf("launch browser: %v", err)
 	}
-	Chromiun = browser
+	Chromium = browser
 }
