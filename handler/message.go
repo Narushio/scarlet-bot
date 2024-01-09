@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Narushio/scarlet-bot/pkg/dto"
-	"github.com/Narushio/scarlet-bot/pkg/event"
-	"github.com/Narushio/scarlet-bot/pkg/openapi"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/dto"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/event"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/openapi"
 )
 
 // Message 处理消息事件

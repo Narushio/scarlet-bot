@@ -3,8 +3,8 @@ package handler
 import (
 	"fmt"
 
-	"github.com/Narushio/scarlet-bot/pkg/dto"
-	"github.com/Narushio/scarlet-bot/pkg/event"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/dto"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/event"
 )
 
 // ChannelEvent 处理子频道事件

@@ -3,7 +3,7 @@ package handler
 import (
 	"log"
 
-	"github.com/Narushio/scarlet-bot/pkg/event"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/event"
 )
 
 func ErrorNotify() event.ErrorNotifyHandler {

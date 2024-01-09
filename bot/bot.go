@@ -2,15 +2,13 @@ package bot
 
 import (
 	"context"
-	"fmt"
-	"path"
-	"runtime"
 	"time"
 
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/token"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/websocket"
+
 	"github.com/Narushio/scarlet-bot/handler"
-	"github.com/Narushio/scarlet-bot/pkg"
-	"github.com/Narushio/scarlet-bot/pkg/token"
-	"github.com/Narushio/scarlet-bot/pkg/websocket"
 )
 
 type ScarletBot struct {
@@ -24,11 +22,7 @@ func NewScarletBot() *ScarletBot {
 func (sb *ScarletBot) LinkStart() error {
 	ctx := context.Background()
 	botToken := token.New(token.TypeBot)
-	if err := botToken.LoadFromConfig(getConfigPath("config.yaml")); err != nil {
-		return err
-	}
-
-	api := pkg.NewOpenAPI(botToken).WithTimeout(3 * time.Second)
+	api := botgo.NewOpenAPI(botToken).WithTimeout(3 * time.Second)
 
 	wsInfo, err := api.WS(ctx, nil, "")
 	if err != nil {
@@ -60,17 +54,9 @@ func (sb *ScarletBot) LinkStart() error {
 		handler.ThreadEvent(),
 	)
 	// 指定需要启动的分片数为 2 的话可以手动修改 wsInfo
-	if err = pkg.NewSessionManager().Start(wsInfo, botToken, &intent); err != nil {
+	if err = botgo.NewSessionManager().Start(wsInfo, botToken, &intent); err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func getConfigPath(name string) string {
-	_, filename, _, ok := runtime.Caller(1)
-	if ok {
-		return fmt.Sprintf("%s/%s", path.Dir(filename), name)
-	}
-	return ""
 }

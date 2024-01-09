@@ -4,9 +4,18 @@ import (
 	"context"
 	"strings"
 
-	"github.com/Narushio/scarlet-bot/pkg/dto"
-	"github.com/Narushio/scarlet-bot/pkg/openapi"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/dto"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/openapi"
 )
+
+const (
+	ResourcePath = "resource/qqx5"
+	InvokeCmd    = "/x5"
+)
+
+func init() {
+
+}
 
 type Plugin struct {
 	Version   string

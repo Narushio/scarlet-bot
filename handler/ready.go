@@ -3,8 +3,8 @@ package handler
 import (
 	"log"
 
-	"github.com/Narushio/scarlet-bot/pkg/dto"
-	"github.com/Narushio/scarlet-bot/pkg/event"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/dto"
+	"github.com/Narushio/scarlet-bot/thirdparty/botgo/event"
 )
 
 // Ready 自定义 Ready 感知连接成功事件

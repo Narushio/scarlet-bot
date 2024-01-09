@@ -1,6 +1,6 @@
 .idea/*
 .tool-versions
 .envrc
-bot/config.yaml
+.env
 resource
 tmp
